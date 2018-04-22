@@ -1,0 +1,10 @@
+- snake s turrety
+- na jednom body part mùže být jeden turret (nebo musí)
+- vylepšení - jeden po druhém jsou body party rozsvìcovány a zhasínány (upgrade cestuje hadem), stiskem tlaèítka je aktivován
+	- pøi aktivaci na hlavì vystøelení pro vylepšení statického turretu nebo super damage
+- vypouštìní turretù - tvorba bludištì
+	- pøi dostání damage
+- game over
+	- hlava do nìèeho vrazí
+	- nexus znièen (nexus je hlava?)
+	- dojdou turrety na hadovi
