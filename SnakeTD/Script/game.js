@@ -11,6 +11,7 @@ function Game(canvas){
 	this.stepLengthCounter = 0;
 	this.gameOver = false;
 	this.gameOverCounter = 0;
+	this.canvasDrawings = [];
 	
 	this.board.getTile([8,8]).addEntity(new EnemyRandom(this, this.getCanvasContext(), [8,8], 0));
 }
@@ -45,6 +46,9 @@ Game.prototype.draw = function(){
 	this.background.draw();
 	this.board.draw();
 	this.snake.draw();
+	for(var i = 0; i < this.canvasDrawings.length; i++)
+		this.canvasDrawings[i].draw();
+	this.canvasDrawings = [];
 	if(this.gameOver)
 		this.gameOverSprite.draw();
 }
@@ -55,4 +59,8 @@ Game.prototype.getCanvasContext = function(){
 
 Game.prototype.setGameOver = function(){
 	this.gameOver = true;
+}
+
+Game.prototype.addCanvasDrawing = function(canvasDrawing){
+	this.canvasDrawings.push(canvasDrawing);
 }

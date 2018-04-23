@@ -29,6 +29,8 @@ Turret.prototype.update = function(){
 	}
 	else if(this.target.dead)
 		this.target = null;
+	else if(!this.checkTargetInRange())
+		this.target = null;
 	if(this.currentCooldown === 0){
 		if(this.target !== null){
 			this.shoot();
@@ -77,6 +79,34 @@ Turret.prototype.lookForTarget = function(){
 		}
 		x++;
 	}while(x <= y);
+}
+
+Turret.prototype.checkTargetInRange = function(){
+	var d = 3 - (2*this.range);
+	var x = 0;
+	var y = this.range;
+	do{
+		var enemy = null;
+		var tile = null;
+		for(var i = 0; i < 8; i++){
+			tile = this.getTileForLook(i, x, y);
+			if(tile !== null){
+				enemy = tile.getEnemy();
+				if(enemy == this.target){
+					return true;
+				}
+			}
+		}
+		if(d < 0)
+			d = d + (4*x) + 6;
+		else{
+			d = d + 4 * (x-y) + 10;
+			y--;
+		}
+		x++;
+	}while(x <= y);
+	
+	return false;
 }
 
 Turret.prototype.getTileForLook = function(index, x, y){

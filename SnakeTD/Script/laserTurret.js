@@ -6,4 +6,5 @@ LaserTurret.prototype = Object.create(Turret.prototype);
 
 LaserTurret.prototype.shoot = function(){
 	this.target.takeDamage(this.damage);
+	this.game.addCanvasDrawing(new LaserFire(this.canvasContext, this, this.target));
 }
