@@ -63,3 +63,25 @@ Board.prototype.draw = function(){
 		}
 	}
 }
+
+Board.prototype.update = function(){
+	for(var i = 0; i < this.sizeX; i++){
+		for(var j = 0; j < this.sizeY; j++){
+			this.boardArray[i][j].update();
+		}
+	}
+}
+
+Board.prototype.getTile = function(tile){
+	if(tile[0] < 0 || tile[0] > this.sizeX || tile[1] < 0 || tile[1] > this.sizeY)
+		return null;
+	return this.boardArray[tile[0]][tile[1]];
+}
+
+Board.prototype.nextStep = function(){
+	for(var i = 0; i < this.sizeX; i++){
+		for(var j = 0; j < this.sizeY; j++){
+				this.boardArray[i][j].nextStep();
+		}
+	}
+}
