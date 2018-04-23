@@ -8,6 +8,8 @@ function BoardTile(context, position, tile){
 BoardTile.prototype.draw = function(){
 	this.context.fillRect(this.position[0],this.position[1], 2, 2);
 	for(var i = 0; i < this.entities.length; i++){
+		if(this.entities[i] instanceof Turret && !this.entities[i].stationary)
+			continue;
 		this.entities[i].draw();
 	}
 }
@@ -15,6 +17,8 @@ BoardTile.prototype.draw = function(){
 BoardTile.prototype.update = function(){
 	for(var i = 0; i < this.entities.length; i++){
 		if(!this.entities[i].updated){
+			if(this.entities[i] instanceof Turret && !this.entities[i].stationary)
+				continue;
 			this.entities[i].updated = true;
 			this.entities[i].update();
 		}
@@ -53,5 +57,23 @@ BoardTile.prototype.isSolid = function(){
 BoardTile.prototype.nextStep = function(){
 	for(var i = 0; i < this.entities.length; i++){
 		this.entities[i].updated = false;
+	}
+}
+
+BoardTile.prototype.getEnemy = function(){
+	for(var i = 0; i < this.entities.length; i++){
+		if(this.entities[i] instanceof Enemy)
+			return this.entities[i];
+	}
+	return null;
+}
+
+BoardTile.prototype.removeDead = function(){
+	for(var i = 0; i < this.entities.length; i++){
+		if(this.entities[i] instanceof Enemy && this.entities[i].dead){
+			delete this.entities[i];
+			this.entities.splice(i,1);
+			i--;
+		}
 	}
 }

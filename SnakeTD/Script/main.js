@@ -7,17 +7,21 @@ window.onload = function(){
 }
 
 window.onkeydown = function(event){
-	switch(event.key){
-		case 'w':
+	switch(event.keyCode){
+		case 87:
+		case 38:
 			game.snake.changeMovementDirection(game.snake.MovementEnum.up);
 			break;
-		case 's':
+		case 83:
+		case 40:
 			game.snake.changeMovementDirection(game.snake.MovementEnum.down);
 			break;
-		case 'a':
+		case 65:
+		case 37:
 			game.snake.changeMovementDirection(game.snake.MovementEnum.left);
 			break;
-		case 'd':
+		case 68:
+		case 39:
 			game.snake.changeMovementDirection(game.snake.MovementEnum.right);
 			break;
 	}

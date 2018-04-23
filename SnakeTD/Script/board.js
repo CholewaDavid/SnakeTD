@@ -1,18 +1,14 @@
-function Board(canvas, sizeX, sizeY){
+function Board(game, canvas, map){
 	this.canvas = canvas;
-	this.sizeX = sizeX;
-	this.sizeY = sizeY;
-	this.TILE_SIZE = 20;
-	this.offset = [];
-	this.computeTileSize();
+	this.game = game;
+	this.sizeX;
+	this.sizeY;
 	
-	this.boardArray = new Array(this.sizeX);
-	for(var i = 0; i < this.sizeX; i++){
-		this.boardArray[i] = new Array(this.sizeY);
-		for(var j = 0; j < this.sizeY; j++){
-			this.boardArray[i][j] = new BoardTile(this.canvas.getContext("2d"), this.convertTileToPos([i,j]), [i,j]);
-		}
-	}
+	this.TILE_SIZE = 20;
+	this.offset = [];	
+	this.boardArray;
+	
+	this.createMap(map);
 }
 
 Board.prototype.computeTileSize = function(){
@@ -82,6 +78,32 @@ Board.prototype.nextStep = function(){
 	for(var i = 0; i < this.sizeX; i++){
 		for(var j = 0; j < this.sizeY; j++){
 				this.boardArray[i][j].nextStep();
+		}
+	}
+}
+
+Board.prototype.createMap = function(map){
+	this.sizeX = map.sizeX;
+	this.sizeY = map.sizeY;
+	
+	this.computeTileSize();
+	
+	this.boardArray = new Array(this.sizeX);
+	for(var i = 0; i < this.sizeX; i++){
+		this.boardArray[i] = new Array(this.sizeY);
+		for(var j = 0; j < this.sizeY; j++){
+			this.boardArray[i][j] = new BoardTile(this.canvas.getContext("2d"), this.convertTileToPos([i,j]), [i,j]);
+			var character = map.mapString.charAt(j*this.sizeX+i);
+			if(character === "W")
+				this.boardArray[i][j].addEntity(new Wall(this.game, this.canvas.getContext("2d"), [i,j], this.convertTileToPos([i,j])));
+		}
+	}
+}
+
+Board.prototype.removeDead = function(){
+	for(var i = 0; i < this.sizeX; i++){
+		for(var j = 0; j < this.sizeY; j++){
+			this.boardArray[i][j].removeDead();
 		}
 	}
 }

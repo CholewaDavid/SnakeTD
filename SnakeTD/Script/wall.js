@@ -1,5 +1,5 @@
-function Wall(game, canvasContext, tile){
-	Entity.call(this, game, canvasContext, game.board.convertTileToPos(tile), true);
+function Wall(game, canvasContext, tile, position){
+	Entity.call(this, game, canvasContext, position, true);
 	
 	this.sprite = new Sprite(this.canvasContext, this.position, "Images/wall.svg", this.angle);
 }

@@ -1,7 +1,7 @@
 function Snake(game, canvasContext, tile){
 	Entity.call(this, game, canvasContext, game.board.convertTileToPos(tile), false);
 
-	this.BodyPartsEnum = Object.freeze({"head": 1, "basic": 2});
+	this.BodyPartsEnum = Object.freeze({"head": 1, "laser": 2});
 	this.MovementEnum = Object.freeze({"left": 1, "up": 2, "right": 3, "down": 4});
 	this.bodyParts = [];
 
@@ -12,6 +12,7 @@ function Snake(game, canvasContext, tile){
 	this.changeMovementDirection(this.MovementEnum.right);
 
 	this.addBodyPart(this.BodyPartsEnum.head);
+	this.lastTailTile;
 }
 
 Snake.prototype = Object.create(Entity.prototype);
@@ -22,24 +23,26 @@ Snake.prototype.draw = function(){
 	}
 }
 
-Snake.prototype.update = function(){
-	this.move();
+Snake.prototype.update = function(){	
 	for(var i = 0; i < this.bodyParts.length; i++){
 		this.bodyParts[i].update();
 	}
-
+	
+	this.move();
+	
 	if(this.game.board.getTile(this.tile).eatFood()){
-		this.addBodyPart(this.BodyPartsEnum.basic);
+		this.addBodyPart(this.BodyPartsEnum.laser);
 	}
 }
 
 Snake.prototype.addBodyPart = function(typeEnum){
 	switch(typeEnum){
 		case 1:
-			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.tile, "Images/SnakeParts/basic.svg", 0));
+			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.tile, "Images/SnakeParts/basic.svg", 0, null));
 			break;
 		case 2:
-			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.computeNewBodyTile(), "Images/SnakeParts/basic.svg", 0));
+			var turret = new LaserTurret(this.game, this.canvasContext, this.computeNewBodyTile(), 0);
+			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.computeNewBodyTile(), "Images/SnakeParts/basic.svg", 0, turret));
 			break;
 	}
 }
@@ -49,8 +52,7 @@ Snake.prototype.computeNewBodyTile = function(){
 		return [this.tile[0] - this.movementVector[0], this.tile[1] - this.movementVector[1]]
 	}
 
-	var dir = [this.bodyParts[this.bodyParts.length-1].tile[0] - this.bodyParts[this.bodyParts.length-2].tile[0], this.bodyParts[this.bodyParts.length-1].tile[1] - this.bodyParts[this.bodyParts.length-2].tile[1]]
-	return [this.bodyParts[this.bodyParts.length].tile[0] + dir[0], this.bodyParts[ths.bodyParts.length].tile[1] + dir[0]];
+	return this.lastTailTile;
 }
 
 Snake.prototype.changeMovementDirection = function(movementEnum){
@@ -83,6 +85,7 @@ Snake.prototype.changeMovementDirection = function(movementEnum){
 }
 
 Snake.prototype.move = function(){
+	this.lastTailTile = this.bodyParts[this.bodyParts.length-1].tile;
 	var nextTile = [this.tile[0] + this.movementVector[0], this.tile[1] + this.movementVector[1]];
 	if(this.game.board.getTile(nextTile) !== null && this.game.board.getTile(nextTile).isSolid())
 		return;

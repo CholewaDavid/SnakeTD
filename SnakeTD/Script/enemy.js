@@ -1,6 +1,6 @@
 var MovementTypeEnum = Object.freeze({"seek": 1, "random": 2});
 
-function Enemy(game, canvasContext, tile, imageName, angle, movementType, diagonalMovement){
+function Enemy(game, canvasContext, tile, imageName, angle, movementType, diagonalMovement, health){
 	Entity.call(this, game, canvasContext, game.board.convertTileToPos(tile), true);
 	
 	this.MovementEnum = Object.freeze({"left": 1, "up": 2, "right": 3, "down": 4});
@@ -10,6 +10,8 @@ function Enemy(game, canvasContext, tile, imageName, angle, movementType, diagon
 	this.nextMovementSprite = new Sprite(this.canvasContext, this.position, "Images/danger.svg", 0);
 	this.movementType = movementType;
 	this.diagonalMovement = diagonalMovement;
+	this.health = health;
+	this.dead = false;
 	
 	this.nextMove = [0,0];
 }
@@ -17,12 +19,16 @@ function Enemy(game, canvasContext, tile, imageName, angle, movementType, diagon
 Enemy.prototype = Object.create(Entity.prototype);
 
 Enemy.prototype.draw = function(){
+	if(this.dead)
+		return;
 	this.mainSprite.draw();
 	if(!(this.nextMove[0] === 0 && this.nextMove[1] === 0))
 		this.nextMovementSprite.draw();
 }
 
 Enemy.prototype.update = function(){
+	if(this.dead)
+		return;
 	this.move();
 	this.setNextMovementSpritePos();
 }
@@ -75,4 +81,14 @@ Enemy.prototype.move = function(){
 
 Enemy.prototype.setNextMovementSpritePos = function(){
 	this.nextMovementSprite.position = this.game.board.convertTileToPos([this.tile[0] + this.nextMove[0], this.tile[1] + this.nextMove[1]]);
+}
+
+Enemy.prototype.takeDamage = function(damage){
+	if(this.dead)
+		return;
+	this.health -= damage;
+	if(this.health <= 0){
+		this.dead = true;
+		this.game.board.getTile(this.tile).addEntity(new Food(this.game, this.canvasContext, this.tile));
+	}
 }
