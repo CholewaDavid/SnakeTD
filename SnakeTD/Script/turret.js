@@ -27,6 +27,8 @@ Turret.prototype.update = function(){
 	if(this.target == null){
 		this.lookForTarget();
 	}
+	else if(this.target.dead)
+		this.target = null;
 	if(this.currentCooldown === 0){
 		if(this.target !== null){
 			this.shoot();

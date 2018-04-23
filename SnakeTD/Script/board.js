@@ -69,7 +69,7 @@ Board.prototype.update = function(){
 }
 
 Board.prototype.getTile = function(tile){
-	if(tile[0] < 0 || tile[0] > this.sizeX || tile[1] < 0 || tile[1] > this.sizeY)
+	if(tile[0] < 0 || tile[0] >= this.sizeX || tile[1] < 0 || tile[1] >= this.sizeY)
 		return null;
 	return this.boardArray[tile[0]][tile[1]];
 }

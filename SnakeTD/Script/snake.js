@@ -87,12 +87,26 @@ Snake.prototype.changeMovementDirection = function(movementEnum){
 Snake.prototype.move = function(){
 	this.lastTailTile = this.bodyParts[this.bodyParts.length-1].tile;
 	var nextTile = [this.tile[0] + this.movementVector[0], this.tile[1] + this.movementVector[1]];
-	if(this.game.board.getTile(nextTile) !== null && this.game.board.getTile(nextTile).isSolid())
+	if(this.game.board.getTile(nextTile) !== null && this.game.board.getTile(nextTile).isSolid()){
+		this.releaseTurret();
 		return;
+	}
 	this.tile = nextTile.slice();
 	for(var i = 0; i < this.bodyParts.length; i++){
 		var tmp = this.bodyParts[i].tile.slice();
 		this.bodyParts[i].move(nextTile);
 		nextTile = tmp.slice();
 	}
+}
+
+Snake.prototype.releaseTurret = function(){
+	var lastBodyPartIndex = this.bodyParts.length - 1;
+	if(lastBodyPartIndex === 0){
+		this.game.setGameOver();
+		return;
+	}
+	this.bodyParts[lastBodyPartIndex].turret.stationary = true;
+	this.bodyParts[lastBodyPartIndex].turret = null;
+	delete this.bodyParts[lastBodyPartIndex];
+	this.bodyParts.splice(lastBodyPartIndex,1);
 }
