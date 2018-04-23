@@ -1,11 +1,11 @@
 function Game(canvas){
-	this.FPS = 60;
 	this.canvas = canvas;
 	this.runGame = true;
 	this.entities = [];
 	this.background = new Sprite(this.getCanvasContext(), [0,0], "Images/canvasBackground.svg", 0);
 	this.board = new Board(this.canvas, 30, 20);
 	this.snake = new Snake(this, this.getCanvasContext(), [2,5]);
+	this.stepLengthCounter = 0;
 }
 
 Game.prototype.gameLoop = function(){
@@ -14,10 +14,14 @@ Game.prototype.gameLoop = function(){
 }
 
 Game.prototype.update = function(){
-	for(var i = 0; i < this.entities.length; i++){
-		this.entities[i].update();
+	this.stepLengthCounter++;
+	if(this.stepLengthCounter == 30){
+		for(var i = 0; i < this.entities.length; i++){
+			this.entities[i].update();
+		}
+		this.snake.update();
+		this.stepLengthCounter = 0;
 	}
-	this.snake.update();
 }
 
 Game.prototype.draw = function(){

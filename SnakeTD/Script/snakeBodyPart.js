@@ -14,3 +14,9 @@ SnakeBodyPart.prototype.update = function(){
 SnakeBodyPart.prototype.draw = function(){
 	this.bodySprite.draw();
 }
+
+SnakeBodyPart.prototype.move = function(tile){
+	this.position = this.game.board.convertTileToPos(tile);
+	this.bodySprite.position = this.position;
+	this.tile = tile.slice();
+}
