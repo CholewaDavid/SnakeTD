@@ -64,8 +64,8 @@ EntryMenu.prototype.activateButton = function(){
 }
 
 EntryMenu.prototype.fillButtons = function(){
-	this.buttons.push(new Button(this.canvas.getContext("2d"), [200,20], "Images/Buttons/startGame.svg", "Images/Buttons/startGameActive.svg", 0));
-	this.buttons.push(new Button(this.canvas.getContext("2d"), [200,50], "Images/Buttons/showHelp.svg", "Images/Buttons/showHelpActive.svg", 0));
+	this.buttons.push(new Button(this.canvas.getContext("2d"), [235,240], "Images/Buttons/startGame.svg", "Images/Buttons/startGameActive.svg", 0));
+	this.buttons.push(new Button(this.canvas.getContext("2d"), [235,350], "Images/Buttons/showHelp.svg", "Images/Buttons/showHelpActive.svg", 0));
 	
 	this.buttons[0].active = true;
 }

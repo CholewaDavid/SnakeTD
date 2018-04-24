@@ -10,17 +10,23 @@ function Turret(game, canvasContext, tile, imageName, angle, range, cooldown, da
 	this.damage = damage;
 	this.target = null;
 	this.stationary = false;
+	this.health = 7;
+	this.dead = false;
 }
 
 Turret.prototype = Object.create(Entity.prototype);
 
 Turret.prototype.draw = function(){
+	if(this.dead)
+		return;
 	if(this.stationary)
 		this.baseSprite.draw();
 	this.turretSprite.draw();
 }
 
 Turret.prototype.update = function(){
+	if(this.dead)
+		return;
 	this.currentCooldown--;
 	if(this.currentCooldown < 0)
 		this.currentCooldown = 0;
@@ -55,77 +61,39 @@ Turret.prototype.move = function(tile){
 }
 
 Turret.prototype.lookForTarget = function(){
-	var d = 3 - (2*this.range);
-	var x = 0;
-	var y = this.range;
-	do{
-		var enemy = null;
-		var tile = null;
-		for(var i = 0; i < 8; i++){
-			tile = this.getTileForLook(i, x, y);
-			if(tile !== null){
-				enemy = tile.getEnemy();
-				if(enemy !== null){
-					this.target = enemy;
-					return;
-				}
+	for(var i = -this.range; i <= this.range; i++){
+		for(var j = -(this.range - Math.abs(i)); j < this.range - Math.abs(i); j++){
+			var pos = [this.tile[0] + i, this.tile[1] + j];
+			var tile = this.game.board.getTile(pos);
+			if(tile == null)
+				continue;
+			var enemy = tile.getEnemy();
+			if(enemy !== null){
+				this.target = enemy;
+				return;
 			}
 		}
-		if(d < 0)
-			d = d + (4*x) + 6;
-		else{
-			d = d + 4 * (x-y) + 10;
-			y--;
-		}
-		x++;
-	}while(x <= y);
+	}
 }
 
 Turret.prototype.checkTargetInRange = function(){
-	var d = 3 - (2*this.range);
-	var x = 0;
-	var y = this.range;
-	do{
-		var enemy = null;
-		var tile = null;
-		for(var i = 0; i < 8; i++){
-			tile = this.getTileForLook(i, x, y);
-			if(tile !== null){
-				enemy = tile.getEnemy();
-				if(enemy == this.target){
-					return true;
-				}
-			}
+	for(var i = -this.range; i <= this.range; i++){
+		for(var j = -(this.range - Math.abs(i)); j < this.range - Math.abs(i); j++){
+			var pos = [this.tile[0] + i, this.tile[1] + j];
+			if(this.target.tile[0] == pos[0] && this.target.tile[1] == pos[1])
+				return true;
 		}
-		if(d < 0)
-			d = d + (4*x) + 6;
-		else{
-			d = d + 4 * (x-y) + 10;
-			y--;
-		}
-		x++;
-	}while(x <= y);
-	
+	}
 	return false;
 }
 
-Turret.prototype.getTileForLook = function(index, x, y){
-	switch(index){
-		case 0:
-			return this.game.board.getTile([this.tile[0] + x, this.tile[1] + y]);
-		case 1:
-			return this.game.board.getTile([this.tile[0] + x, this.tile[1] - y]);
-		case 2:
-			return this.game.board.getTile([this.tile[0] - x, this.tile[1] + y]);
-		case 3:
-			return this.game.board.getTile([this.tile[0] - x, this.tile[1] - y]);
-		case 4:
-			return this.game.board.getTile([this.tile[0] + y, this.tile[1] + x]);
-		case 5:
-			return this.game.board.getTile([this.tile[0] + y, this.tile[1] - x]);
-		case 6:
-			return this.game.board.getTile([this.tile[0] - y, this.tile[1] + x]);
-		case 7:
-			return this.game.board.getTile([this.tile[0] - y, this.tile[1] - x]);
+Turret.prototype.takeDamage = function(damage){
+	if(!this.stationary)
+		return;
+	this.health -= damage;
+	if(this.health <= 0){
+		this.dead = true;
+		var audio = new Audio("Sounds/destruction.ogg");
+		audio.play();
 	}
 }

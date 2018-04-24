@@ -6,7 +6,6 @@ function BoardTile(context, position, tile){
 }
 
 BoardTile.prototype.draw = function(){
-	this.context.fillRect(this.position[0],this.position[1], 2, 2);
 	for(var i = 0; i < this.entities.length; i++){
 		if(this.entities[i] instanceof Turret && !this.entities[i].stationary)
 			continue;
@@ -68,9 +67,17 @@ BoardTile.prototype.getEnemy = function(){
 	return null;
 }
 
+BoardTile.prototype.getBuilding = function(){
+	for(var i = 0; i < this.entities.length; i++){
+		if(this.entities[i] instanceof CoreBuilding || (this.entities[i] instanceof Turret && this.entities[i].stationary))
+			return this.entities[i];
+	}
+	return null;
+}
+
 BoardTile.prototype.removeDead = function(){
 	for(var i = 0; i < this.entities.length; i++){
-		if(this.entities[i] instanceof Enemy && this.entities[i].dead){
+		if((this.entities[i] instanceof Enemy || this.entities[i] instanceof Turret) && this.entities[i].dead){
 			delete this.entities[i];
 			this.entities.splice(i,1);
 			i--;

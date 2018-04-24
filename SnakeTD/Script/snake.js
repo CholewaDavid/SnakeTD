@@ -38,7 +38,7 @@ Snake.prototype.update = function(){
 Snake.prototype.addBodyPart = function(typeEnum){
 	switch(typeEnum){
 		case 1:
-			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.tile, "Images/SnakeParts/basic.svg", 0, null));
+			this.bodyParts.push(new SnakeBodyPart(this.game, this.canvasContext, this.tile, "Images/SnakeParts/head.svg", 0, null));
 			break;
 		case 2:
 			var turret = new LaserTurret(this.game, this.canvasContext, this.computeNewBodyTile(), 0);
@@ -109,4 +109,21 @@ Snake.prototype.releaseTurret = function(){
 	this.bodyParts[lastBodyPartIndex].turret = null;
 	delete this.bodyParts[lastBodyPartIndex];
 	this.bodyParts.splice(lastBodyPartIndex,1);
+}
+
+Snake.prototype.killRemains = function(){
+	var killing = false;
+	for(var i = 0; i < this.bodyParts.length; i++){
+		killing = this.bodyParts[i].dead;
+		if(killing){
+			this.bodyParts[i].turret.stationary = true;
+			this.bodyParts[i].turret = null;
+			delete this.bodyParts[i];
+			this.bodyParts.splice(i,1);
+			i--;
+		}
+	}
+	
+	if(this.bodyParts.length == 1)
+		this.game.setGameOver();
 }

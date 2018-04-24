@@ -96,6 +96,8 @@ Board.prototype.createMap = function(map){
 			var character = map.mapString.charAt(j*this.sizeX+i);
 			if(character === "W")
 				this.boardArray[i][j].addEntity(new Wall(this.game, this.canvas.getContext("2d"), [i,j], this.convertTileToPos([i,j])));
+			else if(character === "C")
+				this.boardArray[i][j].addEntity(new CoreBuilding(this.game, this.canvas.getContext("2d"), [i,j], this.convertTileToPos([i,j])));
 		}
 	}
 }
